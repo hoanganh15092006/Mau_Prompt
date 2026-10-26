@@ -26,3 +26,41 @@ src/
 ├── data/            # Giao tiếp cơ sở dữ liệu, Repository, Schema ORM
 ├── shared/          # Các hàm tiện ích thuần túy (pure helpers), Constants, Types
 └── config/          # Biến môi trường, cấu hình client DB/Third-party
+```
+
+**Quy tắc phân tầng:**
+
+1. `api/` chỉ làm nhiệm vụ parse request, validate input và gọi sang `core/`. Không viết logic nghiệp vụ tại đây.
+2. `core/` chỉ xử lý logic tính toán, không truy vấn trực tiếp DB; phải gọi qua `data/`.
+3. `shared/` chỉ chứa các hàm thuần túy (pure functions), không phụ thuộc vào trạng thái hệ thống.
+
+---
+
+## 3. LUỒNG DỮ LIỆU CHUẨN (DATA FLOW)
+
+Mọi luồng dữ liệu khi thực thi một tác vụ đều phải đi qua các bước tuần tự sau:
+
+`Client Request`
+➔ **Validation Layer** (Kiểm tra Schema/Type bằng Zod hoặc Pydantic)
+➔ **Service / Core Layer** (Thực thi logic nghiệp vụ)
+➔ **Data Layer / Repository** (Đọc/Ghi cơ sở dữ liệu)
+➔ **Response Formatter** (Đóng gói kết quả chuẩn trả về cho Client)
+
+---
+
+## 4. QUY ƯỚC ĐẶT TÊN & TỔ CHỨC FILE (CONVENTIONS)
+
+* **Tên file & thư mục:** Dùng `kebab-case` (ví dụ: `user-profile.service.ts`, `auth-middleware.ts`).
+* **Tên Class / Interface / Type:** Dùng `PascalCase` (ví dụ: `UserProfile`, `CreateOrderDTO`).
+* **Tên biến & hàm:** Dùng `camelCase` (ví dụ: `calculateTotalPrice`, `isActiveUser`).
+* **Tổ chức Module:** Gom nhóm theo tính năng (Feature-based) hoặc theo tầng (Layer-based), không đặt file lung tung ngoài thư mục chỉ định.
+
+---
+
+## 5. CÁC HÀM TIỆN ÍCH DÙNG CHUNG CÓ SẴN (SHARED UTILS)
+
+*Khi cần các tính năng sau, AI phải tái sử dụng từ shared, không được tự viết lại:*
+
+* **Logger:** Import từ `src/shared/logger`
+* **Database Client:** Import instance đã khởi tạo tại `src/config/database`
+* **Custom Errors:** Sử dụng các class lỗi chuẩn định nghĩa sẵn tại `src/shared/errors`
