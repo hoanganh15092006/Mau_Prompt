@@ -1,5 +1,6 @@
 Dưới đây là mẫu chuẩn cho file `ARCHITECTURE.md` bằng tiếng Việt. File này đóng vai trò là "bản đồ địa hình" để AI hiểu rõ ranh giới dự án, không bao giờ tạo file bừa bãi hay duplicate logic.
 
+
 Bạn có thể lưu mẫu này vào file `ARCHITECTURE.md` ở thư mục gốc của dự án và điền thông tin tương ứng:
 
 ```markdown
